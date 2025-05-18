@@ -126,7 +126,7 @@ if ! shopt -oq posix; then
 fi
 
 # === Welcome Message ===
-echo -e "\033[1;95m" # Bright pink for kitty
+echo -e "\033[1;94mNeon Blue Text\033[0m"
 cat <<'EOF'
 
    /\_/\          |\__/,|   (`\
@@ -140,7 +140,7 @@ cat <<'EOF'
 ╚██████╔╝   ██║  ██║   ╚██████╔╝ ██║ ╚████║    ██║    ╚██████╔╝
  ╚═════╝    ██████╔╝    ╚═════╝  ╚═╝  ╚═══╝    ╚═╝     ╚═════╝             
 EOF
-echo -e "\033[1;33mWelcome,YASH to your terminal !!!!!\033[0m"                  # Yellow welcome text
+echo -e "\033[1;33mWelcome,YASH to your terminal !!!!!\033[0m"             # Yellow welcome text
 echo -e "\033[1;36mUser: $USER | Host: $(hostname) | Shell: $SHELL\033[0m" # Cyan user info
 echo -e "\033[1;32mDate: $(date)\033[0m"                                   # Green date
 echo -e "\033[1;34m$(uptime)\033[0m"                                       # Blue uptime
