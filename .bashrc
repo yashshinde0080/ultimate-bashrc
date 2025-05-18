@@ -126,7 +126,6 @@ if ! shopt -oq posix; then
 fi
 
 # === Welcome Message ===
-echo -e "\033[1;94mNeon Blue Text\033[0m"
 cat <<'EOF'
 
    /\_/\          |\__/,|   (`\
