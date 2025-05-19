@@ -112,7 +112,6 @@ extract() {
 # === Environment Variables ===
 export EDITOR='vim'                  # Set default editor to vim
 export PATH="$HOME/.local/bin:$PATH" # Add ~/.local/bin to PATH
-export LC_ALL='en_US.UTF-8'          # Set locale
 export LESS='-R'                     # Enable raw control chars for less (color support)
 
 # === Bash Completion ===
@@ -129,7 +128,7 @@ fi
 cat <<'EOF'
 
    /\_/\          |\__/,|   (`\
-  ( o.o )       _.|o o  |_   ) )
+  ( o.o )       _.|o o  |_   ) )   Welcome YASH
    > ^ <      -(((---(((--------
 
 ██╗   ██╗   ██████╗    ██╗   ██╗ ███╗   ██╗ ████████╗ ██╗   ██╗
@@ -139,12 +138,16 @@ cat <<'EOF'
 ╚██████╔╝   ██║  ██║   ╚██████╔╝ ██║ ╚████║    ██║    ╚██████╔╝
  ╚═════╝    ██████╔╝    ╚═════╝  ╚═╝  ╚═══╝    ╚═╝     ╚═════╝             
 EOF
-echo -e "\033[1;33mWelcome,YASH to your terminal !!!!!\033[0m"             # Yellow welcome text
-echo -e "\033[1;36mUser: $USER | Host: $(hostname) | Shell: $SHELL\033[0m" # Cyan user info
-echo -e "\033[1;32mDate: $(date)\033[0m"                                   # Green date
-echo -e "\033[1;34m$(uptime)\033[0m"                                       # Blue uptime
+
+echo -e "\033[1;33mHello, YASH! Your terminal is live—ready to compile some code?✨💻\033[0m" # Yellow welcome text
+echo -e "\033[1;36mUser: $USER | Host: $(hostname) | Shell: $SHELL\033[0m"                  # Cyan user info
+echo -e "\033[1;32mDate: $(date)\033[0m"                                                    # Green date
 
 # === Final Touches ===
 unset color_prompt force_color_prompt # Clean up unused variables
 
-eval "$(oh-my-posh init bash --config ~/.poshthemes/dracula.omp.json)"
+eval "$(oh-my-posh init bash --config ~/.poshthemes/kali.omp.json)"
+
+export NVM_DIR="$HOME/.nvm"
+[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"                   # This loads nvm
+[ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion" # This loads nvm bash_completion
