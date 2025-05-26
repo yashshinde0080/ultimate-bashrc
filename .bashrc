@@ -58,16 +58,16 @@ if command -v dircolors >/dev/null 2>&1; then
 fi
 
 # === Aliases ===
-alias ll='ls -alF'     # List all files with details
-alias la='ls -A'       # List almost all files (excl. . and ..)
-alias l='ls -CF'       # List files in columns
-alias ..='cd ..'       # Go up one directory
-alias ...='cd ../..'   # Go up two directories
-alias cls='clear'      # Clear the screen
-alias h='history'      # Show command history
-alias j='jobs -l'      # List active jobs with details
-alias python='python3' # Use python3 as default python
-
+alias ll='ls -alF'           # List all files with details
+alias la='ls -A'             # List almost all files (excl. . and ..)
+alias l='ls -CF'             # List files in columns
+alias ..='cd ..'             # Go up one directory
+alias ...='cd ../..'         # Go up two directories
+alias cls='clear'            # Clear the screen
+alias h='history'            # Show command history
+alias j='jobs -l'            # List active jobs with details
+alias python='python3'       # Use python3 as default python
+alias clean='~/wsl-clean.sh' # Clean up WSL
 # === Functions ===
 # Create a directory and cd into it
 mkcd() {
@@ -127,21 +127,20 @@ fi
 # === Welcome Message ===
 cat <<'EOF'
 
-   /\_/\          |\__/,|   (`\
-  ( o.o )       _.|o o  |_   ) )   Welcome YASH
-   > ^ <      -(((---(((--------
+   /\_/\          |\__/,|   (`\    ◤————————————◥
+  ( o.o )       _.|o o  |_   ) )    Welcome YASH
+   > ^ <      -(((---(((--------   ◣————————————◢
 
-██╗   ██╗   ██████╗    ██╗   ██╗ ███╗   ██╗ ████████╗ ██╗   ██╗
-██║   ██║   ██╔══██╗   ██║   ██║ ████╗  ██║ ╚══██╔══╝ ██║   ██║
-██║   ██║   ██████╔╝   ██║   ██║ ██╔██╗ ██║    ██║    ██║   ██║
-██║   ██║   ██╔══██╗   ██║   ██║ ██║╚██╗██║    ██║    ██║   ██║
-╚██████╔╝   ██║  ██║   ╚██████╔╝ ██║ ╚████║    ██║    ╚██████╔╝
- ╚═════╝    ██████╔╝    ╚═════╝  ╚═╝  ╚═══╝    ╚═╝     ╚═════╝             
+██╗   ██╗██████╗ ██╗   ██╗███╗   ██╗████████╗██╗   ██╗
+██║   ██║██╔══██╗██║   ██║████╗  ██║╚══██╔══╝██║   ██║
+██║   ██║██████╔╝██║   ██║██╔██╗ ██║   ██║   ██║   ██║
+██║   ██║██╔══██╗██║   ██║██║╚██╗██║   ██║   ██║   ██║
+╚██████╔╝██████╔╝╚██████╔╝██║ ╚████║   ██║   ╚██████╔╝
+ ╚═════╝ ╚═════╝  ╚═════╝ ╚═╝  ╚═══╝   ╚═╝    ╚═════╝ 
 EOF
 
 echo -e "\033[1;33mHello, YASH! Your terminal is live—ready to compile some code?✨💻\033[0m" # Yellow welcome text
 echo -e "\033[1;36mUser: $USER | Host: $(hostname) | Shell: $SHELL\033[0m"                  # Cyan user info
-echo -e "\033[1;32mDate: $(date)\033[0m"                                                    # Green date
 
 # === Final Touches ===
 unset color_prompt force_color_prompt # Clean up unused variables
