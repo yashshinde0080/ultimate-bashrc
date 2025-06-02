@@ -58,16 +58,19 @@ if command -v dircolors >/dev/null 2>&1; then
 fi
 
 # === Aliases ===
-alias ll='ls -alF'           # List all files with details
-alias la='ls -A'             # List almost all files (excl. . and ..)
-alias l='ls -CF'             # List files in columns
-alias ..='cd ..'             # Go up one directory
-alias ...='cd ../..'         # Go up two directories
-alias cls='clear'            # Clear the screen
-alias h='history'            # Show command history
-alias j='jobs -l'            # List active jobs with details
-alias python='python3'       # Use python3 as default python
-alias clean='~/wsl-clean.sh' # Clean up WSL
+alias ll='ls -alF'                                    # List all files with details
+alias la='ls -A'                                      # List almost all files (excl. . and ..)
+alias l='ls -CF'                                      # List files in columns
+alias ..='cd ..'                                      # Go up one directory
+alias ...='cd ../..'                                  # Go up two directories
+alias cls='clear'                                     # Clear the screen
+alias h='history'                                     # Show command history
+alias j='jobs -l'                                     # List active jobs with details
+alias python='python3'                                # Use python3 as default python
+alias clean='~/wsl-clean.sh'                          # Clean up WSL
+alias update='sudo apt update && sudo apt upgrade -y' # Update system
+alias ex='exit'                                       # Exit the shell
+
 # === Functions ===
 # Create a directory and cd into it
 mkcd() {
@@ -137,6 +140,7 @@ cat <<'EOF'
 ██║   ██║██╔══██╗██║   ██║██║╚██╗██║   ██║   ██║   ██║
 ╚██████╔╝██████╔╝╚██████╔╝██║ ╚████║   ██║   ╚██████╔╝
  ╚═════╝ ╚═════╝  ╚═════╝ ╚═╝  ╚═══╝   ╚═╝    ╚═════╝ 
+
 EOF
 
 echo -e "\033[1;33mHello, YASH! Your terminal is live—ready to compile some code?✨💻\033[0m" # Yellow welcome text
@@ -145,8 +149,29 @@ echo -e "\033[1;36mUser: $USER | Host: $(hostname) | Shell: $SHELL\033[0m"      
 # === Final Touches ===
 unset color_prompt force_color_prompt # Clean up unused variables
 
-eval "$(oh-my-posh init bash --config ~/.poshthemes/kali.omp.json)"
+# eval "$(oh-my-posh init bash --config ~/.poshthemes/kali.omp.json)"
+eval "$(starship init bash)"
+export STARSHIP_CONFIG=~/.config/starship.toml
 
 export NVM_DIR="$HOME/.nvm"
 [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"                   # This loads nvm
 [ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion" # This loads nvm bash_completion
+
+# Shortcut to run Python files
+py() {
+  if [ -f "$1" ]; then
+    python3 "$1"
+  else
+    echo "Usage: py <filename.py>"
+  fi
+}
+
+# Shortcut to compile and run C files
+c() {
+  if [ -f "$1" ]; then
+    filename="${1%.*}"
+    gcc "$1" -o "$filename" && ./"$filename"
+  else
+    echo "Usage: c <filename.c>"
+  fi
+}
