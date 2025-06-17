@@ -89,7 +89,7 @@ sudo apt install batcat tree htop
 cp ~/.bashrc ~/.bashrc.backup
 
 # Download and install
-curl -fsSL https://raw.githubusercontent.com/yourusername/bash-config/main/.bashrc > ~/.bashrc
+git clone https://github.com/yashshinde0080/simple-ubuntu-.bashrc.git > ~/.bashrc
 
 # Install Starship prompt
 curl -sS https://starship.rs/install.sh | sh
@@ -104,7 +104,7 @@ source ~/.bashrc
 ### Manual Installation
 1. Clone this repository:
    ```bash
-   git clone https://github.com/yourusername/bash-config.git
+   git clone https://github.com/yashshinde0080/simple-ubuntu-.bashrc.git
    cd bash-config
    ```
 
@@ -289,6 +289,6 @@ This project is licensed under the **MIT License** - see the [LICENSE](LICENSE) 
 
 - **GitHub**: [@yourusername](https://github.com/yourusername)
 - **Twitter**: [@yourusername](https://twitter.com/yourusername)
-- **Email**: your.email@example.com
+- **Email**: syash0080@gmail.com
 
 > *"A beautiful terminal is a productive terminal"* ✨
