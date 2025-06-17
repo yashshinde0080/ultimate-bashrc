@@ -1,125 +1,294 @@
-# 🚀 Custom Bash Configuration
+# 🚀 Ultimate Bash Configuration
 
-> A powerful, colorful, and feature-rich bash configuration that transforms your terminal experience into a developer-friendly powerhouse.
+<div align="center">
+
+![Bash](https://img.shields.io/badge/Bash-4EAA25?style=for-the-badge&logo=gnu-bash&logoColor=white)
+![Ubuntu](https://img.shields.io/badge/Ubuntu-E95420?style=for-the-badge&logo=ubuntu&logoColor=white)
+![WSL](https://img.shields.io/badge/WSL-0078D4?style=for-the-badge&logo=windows&logoColor=white)
+![Starship](https://img.shields.io/badge/Starship-DD0B78?style=for-the-badge&logo=starship&logoColor=white)
+
+**A beautiful, feature-rich bash configuration with Catppuccin colors, custom functions, and developer-friendly aliases.**
+
+[Features](#-features) • [Installation](#-installation) • [Usage](#-usage) • [Customization](#-customization)
+
+</div>
+
+---
+
+## 📸 Preview
+
+```bash
+   /\_/\          |\__/,|   (`\    ◤————————————◥
+  ( o.o )       _.|o o  |_   ) )    Welcome YASH
+   > ^ <      -(((---(((--------   ◣————————————◢
+
+██╗   ██╗██████╗ ██╗   ██╗███╗   ██╗████████╗██╗   ██╗
+██║   ██║██╔══██╗██║   ██║████╗  ██║╚══██╔══╝██║   ██║
+██║   ██║██████╔╝██║   ██║██╔██╗ ██║   ██║   ██║   ██║
+██║   ██║██╔══██╗██║   ██║██║╚██╗██║   ██║   ██║   ██║
+╚██████╔╝██████╔╝╚██████╔╝██║ ╚████║   ██║   ╚██████╔╝
+ ╚═════╝ ╚═════╝  ╚═════╝ ╚═╝  ╚═══╝   ╚═╝    ╚═════╝ 
+
+Hello, YASH! Your terminal is live — ready to compile some code?✨💻
+User: yash | Host: hostname | Shell: /bin/bash
+💡Type 'helpx' to see available functions | ✨Type 'als' to see available aliases | 🎨Type 'colors' to show colors
+```
 
 ## ✨ Features
 
-### 🎨 **Visual Enhancements**
-- **Colorful Prompt**: Beautiful color-coded prompt with user, host, path, and git branch information
-- **Git Branch Display**: Real-time git branch status in your prompt
-- **Custom Welcome Message**: ASCII art greeting with system information
-- **Terminal Title**: Dynamic terminal title showing current user and directory
+### 🎨 **Beautiful Catppuccin Color Scheme**
+- Full RGB color palette with 24 carefully selected colors
+- Consistent theming across all functions and outputs
+- Eye-friendly color combinations for extended terminal sessions
 
-### 📝 **History Management**
-- **Smart History**: Ignores duplicates and commands starting with spaces
-- **Timestamped History**: Every command gets a timestamp for easy tracking
-- **Persistent History**: Commands are appended to history file in real-time
-- **Large History Size**: 1000 commands in memory, 2000 in file
+### 🛠️ **Enhanced Shell Experience**
+- **Starship Prompt**: Modern, fast, and customizable prompt
+- **Smart History**: Duplicate removal, timestamps, and better navigation
+- **Auto-completion**: Enhanced bash completion with spell correction
+- **Directory Navigation**: Smart cd with spell correction and autocd
 
-### 🛠️ **Shell Enhancements**
-- **Auto Directory Change**: Type directory name to cd into it
-- **Spelling Correction**: Automatic correction for directory names and cd commands
-- **Window Size Updates**: Automatically adjusts after each command
-- **Bash Completion**: Enhanced tab completion support
+### 📊 **System Information & Monitoring**
+- `sysinfo` - Beautiful system information display
+- `duh` - Directory sizes with color coding
+- `ports` - Quick port listing
+- Memory, disk, and process monitoring aliases
 
-### ⚡ **Powerful Aliases**
-```bash
-ll          # Detailed file listing
-la          # Show almost all files
-..          # Go up one directory  
-...         # Go up two directories
-cls         # Clear screen
-update      # System update command
-python      # Uses python3 by default
-```
+### 💻 **Developer Tools**
+- **Git Integration**: Quick git operations with `gita`, `gitc`, `gitp`
+- **Project Management**: `newproject` creates structured project directories
+- **HTTP Server**: `serve` starts Python HTTP server instantly
+- **Language Shortcuts**: `py` for Python, `c` for C compilation
+
+### 📁 **File Management**
+- `backup` - Create timestamped backups
+- `search` - Find files by pattern
+- `extract` - Universal archive extractor
+- `mkcd` - Create and enter directory in one command
 
 ### 🔧 **Utility Functions**
+- `note` - Simple note-taking system
+- `calc` - Built-in calculator
+- `colors` - Display full color palette
+- `helpx` - Interactive help system
 
-#### File Management
-- **`mkcd <dir>`** - Create directory and navigate into it
-- **`f <name>`** - Find files by name in current directory
-- **`extract <file>`** - Extract various archive formats (tar, zip, gz, etc.)
+## 🚀 Installation
 
-#### Development Tools
-- **`gs()`** - Quick git status and diff overview
-- **`py <file>`** - Run Python files with python3
-- **`c <file>`** - Compile and run C files with GCC
+### Prerequisites
+```bash
+# Required tools
+sudo apt update
+sudo apt install git curl wget vim
 
-## 🚀 Quick Start
+# Optional but recommended
+sudo apt install batcat tree htop
+```
 
-### Installation
+### Quick Install
+```bash
+# Backup your current .bashrc
+cp ~/.bashrc ~/.bashrc.backup
 
-1. **Clone or download** this configuration file
-2. **Backup** your existing `.bashrc`:
+# Download and install
+curl -fsSL https://raw.githubusercontent.com/yourusername/bash-config/main/.bashrc > ~/.bashrc
+
+# Install Starship prompt
+curl -sS https://starship.rs/install.sh | sh
+
+# Install NVM (Node Version Manager)
+curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.0/install.sh | bash
+
+# Reload configuration
+source ~/.bashrc
+```
+
+### Manual Installation
+1. Clone this repository:
    ```bash
-   cp ~/.bashrc ~/.bashrc.backup
+   git clone https://github.com/yourusername/bash-config.git
+   cd bash-config
    ```
-3. **Replace** your `.bashrc` with this configuration:
+
+2. Copy the configuration:
    ```bash
-   cp paste.txt ~/.bashrc
+   cp .bashrc ~/.bashrc
+   cp .config/starship.toml ~/.config/starship.toml
    ```
-4. **Reload** your shell:
+
+3. Install dependencies and reload:
    ```bash
    source ~/.bashrc
    ```
 
-### Dependencies
+## 📚 Usage Guide
 
-This configuration works best with:
-- **Starship Prompt** (recommended) - Modern cross-shell prompt
-- **Git** - For git branch integration
-- **Node Version Manager (NVM)** - For Node.js development
-- **GCC** - For C compilation features
+### 🎯 Quick Commands Reference
 
-## 🎯 What You Get
+#### **File Operations**
+| Command | Description | Example |
+|---------|-------------|---------|
+| `ll` | List all files with details | `ll` |
+| `la` | List almost all files | `la` |
+| `lh` | List with human-readable sizes | `lh` |
+| `backup <file>` | Create timestamped backup | `backup config.txt` |
+| `search <pattern>` | Find files by name | `search "*.py"` |
 
-### Before
-```
-user@hostname:~$ 
-```
+#### **Navigation**
+| Command | Description | Example |
+|---------|-------------|---------|
+| `..` | Go up one directory | `..` |
+| `...` | Go up two directories | `...` |
+| `mkcd <dir>` | Create and enter directory | `mkcd newproject` |
 
-### After
-```
-YASH@hostname:/path/to/directory (main) ⚡ 
-```
+#### **Git Shortcuts**
+| Command | Description | Example |
+|---------|-------------|---------|
+| `gita <files>` | Git add files | `gita .` |
+| `gitc <message>` | Git commit with message | `gitc "fix: bug resolved"` |
+| `gitp` | Git push | `gitp` |
+| `gitpull` | Git pull | `gitpull` |
+| `gitst` | Git status (short) | `gitst` |
+| `gitlog` | Pretty git log | `gitlog` |
 
-Plus a beautiful welcome screen with ASCII art and system information!
+#### **Development**
+| Command | Description | Example |
+|---------|-------------|---------|
+| `py <file>` | Run Python file | `py script.py` |
+| `c <file>` | Compile and run C file | `c program.c` |
+| `serve [port]` | Start HTTP server | `serve 8080` |
+| `newproject <name>` | Create project structure | `newproject myapp` |
 
-## 🔧 Customization
+#### **System & Utilities**
+| Command | Description | Example |
+|---------|-------------|---------|
+| `sysinfo` | Show system information | `sysinfo` |
+| `duh` | Directory sizes with colors | `duh` |
+| `calc <expr>` | Calculate expression | `calc "2*3+4"` |
+| `note <text>` | Add/view notes | `note "Remember to..."` |
+| `extract <file>` | Extract any archive | `extract file.tar.gz` |
 
-### Colors
-Modify the color variables in the prompt section:
+#### **Help & Information**
+| Command | Description |
+|---------|-------------|
+| `helpx` | Show custom functions help |
+| `als` | Show all aliases |
+| `colors` | Display color palette |
+
+### 🎨 Color Palette
+
+The configuration includes a full **Catppuccin** color scheme with these colors:
+
+**Main Colors:**
+- 🌸 Rosewater, Flamingo, Pink, Mauve
+- ❤️ Red, Maroon, Peach, Yellow  
+- 💚 Green, Teal, Sky, Sapphire
+- 💙 Blue, Lavender
+
+**Text & Surface Colors:**
+- 📝 Text, Subtext1, Subtext0
+- 🎯 Overlay2, Overlay1, Overlay0
+- 🏠 Surface2, Surface1, Surface0, Base, Mantle, Crust
+
+Use `colors` command to see the full palette with RGB values!
+
+## ⚙️ Customization
+
+### 🎨 Changing Colors
+Edit the color variables at the top of `.bashrc`:
 ```bash
-c_user='\[\e[1;32m\]'   # Username color (bright green)
-c_host='\[\e[1;36m\]'   # Hostname color (bright cyan)
-c_path='\[\e[1;34m\]'   # Path color (bright blue)
+# Example: Change primary text color
+e_text='\e[38;2;255;255;255m'  # White instead of default
 ```
 
-### Welcome Message
-Replace the ASCII art in the welcome section with your own design or remove it entirely.
+### 🖥️ Customizing Starship Prompt
+Edit `~/.config/starship.toml`:
+```toml
+[character]
+success_symbol = "[➜](bold green)"
+error_symbol = "[➜](bold red)"
+```
 
-### Aliases
-Add your own aliases in the aliases section:
+### 📝 Adding Custom Functions
+Add your functions before the "Final Touches" section:
 ```bash
-alias myalias='your-command-here'
+# Custom function example
+myfunction() {
+    echo -e "${e_green}Hello from my custom function!${e_reset}"
+}
 ```
 
-## 📋 Compatibility
+### 🔧 Environment Variables
+Customize these variables in the configuration:
+```bash
+export EDITOR='code'              # Change default editor
+export BROWSER='firefox'          # Set default browser
+export PATH="$HOME/bin:$PATH"     # Add custom bin directory
+```
 
-- ✅ **Ubuntu/Debian** - Fully tested
-- ✅ **WSL (Windows Subsystem for Linux)** - Optimized for WSL usage
-- ✅ **macOS** - Compatible with minor modifications
-- ✅ **Most Linux Distributions** - Should work out of the box
+## 🛠️ Advanced Features
+
+### 📊 System Monitoring
+The configuration includes several monitoring tools:
+- `htop` integration for process monitoring
+- `df -h` and `du -h` for disk usage
+- `free -h` for memory usage
+- Network port monitoring with `netstat`
+
+### 🔄 Auto-completion
+Enhanced bash completion with:
+- Command completion
+- File path completion  
+- Git branch completion
+- Variable name completion
+
+### 📚 History Management
+Smart history features:
+- Timestamps on all commands
+- Duplicate removal
+- Increased history size (1000 commands)
+- Shared history across sessions
 
 ## 🤝 Contributing
 
-Feel free to:
-- Fork this repository
-- Add your own customizations
-- Submit pull requests with improvements
-- Report issues or suggestions
+1. **Fork** the repository
+2. **Create** a feature branch: `git checkout -b feature/amazing-feature`
+3. **Commit** your changes: `git commit -m 'Add amazing feature'`
+4. **Push** to the branch: `git push origin feature/amazing-feature`
+5. **Open** a Pull Request
+
+### 🐛 Bug Reports
+Found a bug? Please open an issue with:
+- Your OS and shell version
+- Steps to reproduce
+- Expected vs actual behavior
+- Any error messages
+
+## 📄 License
+
+This project is licensed under the **MIT License** - see the [LICENSE](LICENSE) file for details.
+
+## 🙏 Acknowledgments
+
+- **[Catppuccin](https://catppuccin.com/)** - For the beautiful color palette
+- **[Starship](https://starship.rs/)** - For the amazing prompt
+- **[NVM](https://github.com/nvm-sh/nvm)** - Node Version Manager
+- **Bash Community** - For endless inspiration
+
 ---
 
-**Made with ❤️ for developers who love a beautiful terminal experience**
+<div align="center">
 
-> Transform your boring terminal into a colorful, functional workspace that makes coding a joy!
+**Made with ❤️ for developers who love beautiful terminals**
+
+[⭐ Star this repo](https://github.com/yourusername/bash-config) • [🐛 Report Bug](https://github.com/yourusername/bash-config/issues) • [💡 Request Feature](https://github.com/yourusername/bash-config/issues)
+
+</div>
+
+---
+
+### 📱 Connect
+
+- **GitHub**: [@yourusername](https://github.com/yourusername)
+- **Twitter**: [@yourusername](https://twitter.com/yourusername)
+- **Email**: your.email@example.com
+
+> *"A beautiful terminal is a productive terminal"* ✨
