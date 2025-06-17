@@ -3,6 +3,9 @@
 # If not running interactively, don't do anything
 [ -z "$PS1" ] && return
 
+# Clear terminal on startup (for Warp AI)
+clear
+
 # rgb color
 
 e_reset='\e[0m'
@@ -322,6 +325,35 @@ als() {
   echo -e "${e_sapphire}╚═══════════════════════════════════════════════════════════════════════════════════════════════════╝${e_reset}"
 }
 
+# Show available colors in a formatted table
+colors() {
+  echo -e "${e_sapphire}╔═══════════════════════════════════════════════════════════════════╗${e_reset}"
+  echo -e "${e_sapphire}║${e_text}                       Color Palette                               ${e_sapphire}║${e_reset}"
+  echo -e "${e_sapphire}╠═══════════════════════════════════════════════════════════════════╣${e_reset}"
+  echo -e "${e_sapphire}║${e_rosewater} rosewater ${e_text}- \e[38;2;245;224;220m█████${e_text} (245,224,220) ${e_sapphire}│${e_flamingo} flamingo  ${e_text}- \e[38;2;242;205;205m█████${e_text} (242,205,205) ${e_sapphire}║${e_reset}"
+  echo -e "${e_sapphire}║${e_pink} pink      ${e_text}- \e[38;2;245;194;231m█████${e_text} (245,194,231) ${e_sapphire}│${e_mauve} mauve     ${e_text}- \e[38;2;203;166;247m█████${e_text} (203,166,247) ${e_sapphire}║${e_reset}"
+  echo -e "${e_sapphire}║${e_red} red       ${e_text}- \e[38;2;243;139;168m█████${e_text} (243,139,168) ${e_sapphire}│${e_maroon} maroon    ${e_text}- \e[38;2;235;160;172m█████${e_text} (235,160,172) ${e_sapphire}║${e_reset}"
+  echo -e "${e_sapphire}║${e_peach} peach     ${e_text}- \e[38;2;250;179;135m█████${e_text} (250,179,135) ${e_sapphire}│${e_yellow} yellow    ${e_text}- \e[38;2;249;226;175m█████${e_text} (249,226,175) ${e_sapphire}║${e_reset}"
+  echo -e "${e_sapphire}║${e_green} green     ${e_text}- \e[38;2;166;227;161m█████${e_text} (166,227,161) ${e_sapphire}│${e_teal} teal      ${e_text}- \e[38;2;148;226;213m█████${e_text} (148,226,213) ${e_sapphire}║${e_reset}"
+  echo -e "${e_sapphire}║${e_sky} sky       ${e_text}- \e[38;2;137;220;235m█████${e_text} (137,220,235) ${e_sapphire}│${e_sapphire} sapphire  ${e_text}- \e[38;2;116;199;236m█████${e_text} (116,199,236) ${e_sapphire}║${e_reset}"
+  echo -e "${e_sapphire}║${e_blue} blue      ${e_text}- \e[38;2;137;180;250m█████${e_text} (137,180,250) ${e_sapphire}│${e_lavender} lavender  ${e_text}- \e[38;2;180;190;254m█████${e_text} (180,190,254) ${e_sapphire}║${e_reset}"
+  echo -e "${e_sapphire}╠═══════════════════════════════════════════════════════════════════╣${e_reset}"
+  echo -e "${e_sapphire}║${e_text}                        Text Colors                                ${e_sapphire}║${e_reset}"
+  echo -e "${e_sapphire}╠═══════════════════════════════════════════════════════════════════╣${e_reset}"
+  echo -e "${e_sapphire}║${e_text} text      ${e_text}- \e[38;2;205;214;244m█████${e_text} (205,214,244) ${e_sapphire}│${e_subtext1} subtext1  ${e_text}- \e[38;2;186;194;222m█████${e_text} (186,194,222) ${e_sapphire}║${e_reset}"
+  echo -e "${e_sapphire}║${e_subtext0} subtext0  ${e_text}- \e[38;2;166;173;200m█████${e_text} (166,173,200) ${e_sapphire}│${e_overlay2} overlay2  ${e_text}- \e[38;2;147;153;178m█████${e_text} (147,153,178) ${e_sapphire}║${e_reset}"
+  echo -e "${e_sapphire}║${e_overlay1} overlay1  ${e_text}- \e[38;2;127;132;156m█████${e_text} (127,132,156) ${e_sapphire}│${e_overlay0} overlay0  ${e_text}- \e[38;2;108;112;134m█████${e_text} (108,112,134) ${e_sapphire}║${e_reset}"
+  echo -e "${e_sapphire}╠═══════════════════════════════════════════════════════════════════╣${e_reset}"
+  echo -e "${e_sapphire}║${e_text}                       Surface Colors                              ${e_sapphire}║${e_reset}"
+  echo -e "${e_sapphire}╠═══════════════════════════════════════════════════════════════════╣${e_reset}"
+  echo -e "${e_sapphire}║${e_surface2} surface2  ${e_text}- \e[38;2;88;91;112m█████${e_text} (88,91,112)   ${e_sapphire}│${e_surface1} surface1  ${e_text}- \e[38;2;69;71;90m█████${e_text} (69,71,90)    ${e_sapphire}║${e_reset}"
+  echo -e "${e_sapphire}║${e_surface0} surface0  ${e_text}- \e[38;2;49;50;68m█████${e_text} (49,50,68)    ${e_sapphire}│${e_base} base      ${e_text}- \e[38;2;30;30;46m█████${e_text} (30,30,46)    ${e_sapphire}║${e_reset}"
+  echo -e "${e_sapphire}║${e_mantle} mantle    ${e_text}- \e[38;2;24;24;37m█████${e_text} (24,24,37)    ${e_sapphire}│${e_crust} crust     ${e_text}- \e[38;2;17;17;27m█████${e_text} (17,17,27)    ${e_sapphire}║${e_reset}"
+  echo -e "${e_sapphire}╚═══════════════════════════════════════════════════════════════════╝${e_reset}"
+  echo -e "${e_overlay1}💡 Use these color variables in your scripts: \${e_colorname}text\${e_reset}${e_reset}"
+}
+
+
 # === Environment Variables ===
 export EDITOR='vim'                  # Set default editor to vim
 export PATH="$HOME/.local/bin:$PATH" # Add ~/.local/bin to PATH
@@ -355,7 +387,7 @@ EOF
 
 echo -e "${e_rosewater}Hello, ${e_mauve}YASH${e_rosewater}! Your terminal is live — ready to compile some code?✨💻${e_reset}"
 echo -e "${e_teal}User: ${e_text}$USER ${e_teal}| Host: ${e_text}$(hostname) ${e_teal}| Shell: ${e_text}$SHELL${e_reset}"
-echo -e "${e_overlay1}💡 Type 'helpx' to see available functions${e_reset}|${e_overlay1}✨ Type 'als' to see available aliases${e_reset}"
+echo -e "${e_overlay1}💡Type 'helpx' to see available functions${e_reset}|${e_overlay1}✨Type 'als' to see available aliases${e_reset}|${e_overlay1}🎨Type "colors" to show colors of terminal${e_overlay1}"
 
 # === Final Touches ===
 unset color_prompt force_color_prompt # Clean up unused variables
@@ -386,3 +418,5 @@ c() {
     echo "Usage: c <filename.c>"
   fi
 }
+alias wrap="/mnt/c/Users/yash shinde/AppData/Local/wrap/bin/wrap.exe"
+alias wrap="/mnt/c/Users/yash shinde/AppData/Local/wrap/bin/wrap.exe"
