@@ -376,18 +376,21 @@ cat <<'EOF'
   ( o.o )       _.|o o  |_   ) )    Welcome YASH
    > ^ <      -(((---(((--------   ◣————————————◢
 
-██╗   ██╗██████╗ ██╗   ██╗███╗   ██╗████████╗██╗   ██╗
-██║   ██║██╔══██╗██║   ██║████╗  ██║╚══██╔══╝██║   ██║
-██║   ██║██████╔╝██║   ██║██╔██╗ ██║   ██║   ██║   ██║
-██║   ██║██╔══██╗██║   ██║██║╚██╗██║   ██║   ██║   ██║
-╚██████╔╝██████╔╝╚██████╔╝██║ ╚████║   ██║   ╚██████╔╝
- ╚═════╝ ╚═════╝  ╚═════╝ ╚═╝  ╚═══╝   ╚═╝    ╚═════╝ 
+
+██╗   ██╗ █████╗ ███████╗██╗  ██╗     ██╗ ██╗     ██╗   ██╗██████╗ ██╗   ██╗███╗   ██╗████████╗██╗   ██╗      
+╚██╗ ██╔╝██╔══██╗██╔════╝██║  ██║    ████████╗    ██║   ██║██╔══██╗██║   ██║████╗  ██║╚══██╔══╝██║   ██║      
+ ╚████╔╝ ███████║███████╗███████║    ╚██╔═██╔╝    ██║   ██║██████╔╝██║   ██║██╔██╗ ██║   ██║   ██║   ██║      
+  ╚██╔╝  ██╔══██║╚════██║██╔══██║    ████████╗    ██║   ██║██╔══██╗██║   ██║██║╚██╗██║   ██║   ██║   ██║      
+   ██║   ██║  ██║███████║██║  ██║    ╚██╔═██╔╝    ╚██████╔╝██████╔╝╚██████╔╝██║ ╚████║   ██║   ╚██████╔╝██╗██╗
+   ╚═╝   ╚═╝  ╚═╝╚══════╝╚═╝  ╚═╝     ╚═╝ ╚═╝      ╚═════╝ ╚═════╝  ╚═════╝ ╚═╝  ╚═══╝   ╚═╝    ╚═════╝ ╚═╝╚═╝
 
 EOF
 
 echo -e "${e_rosewater}Hello, ${e_mauve}YASH${e_rosewater}! Your terminal is live — ready to compile some code?✨💻${e_reset}"
 echo -e "${e_teal}User: ${e_text}$USER ${e_teal}| Host: ${e_text}$(hostname) ${e_teal}| Shell: ${e_text}$SHELL${e_reset}"
-echo -e "${e_overlay1}💡Type 'helpx' to see available functions${e_reset}|${e_overlay1}✨Type 'als' to see available aliases${e_reset}|${e_overlay1}🎨Type "colors" to show colors of terminal${e_overlay1}"
+echo -e "${e_overlay1}💡Type 'helpx' to see available functions${e_reset}"
+echo -e "${e_overlay1}✨Type 'als' to see available aliases${e_reset}"
+echo -e "${e_overlay1}🎨Type \"colors\" to show colors of terminal${e_reset}"
 
 # === Final Touches ===
 unset color_prompt force_color_prompt # Clean up unused variables
@@ -420,3 +423,57 @@ c() {
 }
 alias wrap="/mnt/c/Users/yash shinde/AppData/Local/wrap/bin/wrap.exe"
 alias wrap="/mnt/c/Users/yash shinde/AppData/Local/wrap/bin/wrap.exe"
+
+# Browse files using fzf with preview
+fz() {
+  find . -type f | fzf \
+    --height=90% \
+    --layout=reverse \
+    --border=rounded \
+    --prompt='🔍 Browse: ' \
+    --pointer='➤' \
+    --marker='✓' \
+    --info=inline \
+    --color=dark,border:bright-magenta \
+    --preview-window=right:60%:wrap:border-sharp \
+    --preview='bat --color=always --style=numbers --paging=never --line-range=:500 {}' \
+    --bind='ctrl-p:toggle-preview'
+}
+
+# Open selected file in nvim using fzf
+nf() {
+  local file
+  file=$(find . -type f | fzf \
+    --height=90% \
+    --layout=reverse \
+    --border=rounded \
+    --prompt='📄 Open in nvim: ' \
+    --pointer='➤' \
+    --marker='✓' \
+    --info=inline \
+    --color=dark,border:bright-cyan \
+    --preview-window=right:60%:wrap:border-sharp \
+    --preview='bat --color=always --style=numbers --paging=never --line-range=:500 {}' \
+    --bind='ctrl-p:toggle-preview')
+
+  [[ -n "$file" ]] && nvim "$file"
+}
+
+# cd into a directory selected with fzf
+cdfz() {
+  local dir
+  dir=$(find . -type d | fzf \
+    --height=90% \
+    --layout=reverse \
+    --border=rounded \
+    --prompt='📁 Select directory: ' \
+    --pointer='➤' \
+    --marker='✓' \
+    --info=inline \
+    --color=dark,border:bright-green \
+    --preview-window=right:60%:wrap:border-sharp \
+    --preview='ls -la {}' \
+    --bind='ctrl-p:toggle-preview')
+
+  [[ -n "$dir" ]] && cd "$dir"
+}
