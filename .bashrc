@@ -91,9 +91,10 @@ if command -v dircolors >/dev/null 2>&1; then
 fi
 
 # === Aliases ===
-alias ll='ls -alF'                                    # List all files with details
-alias la='ls -A'                                      # List almost all files (excl. . and ..)
-alias l='ls -CF'                                      # List files in columns
+alias l='exa --icons --group-directories-first'
+alias ll='exa -l -T -h -L 2 --icons --group-directories-first --git --bytes'
+alias la='exa -la -T -L 2 --icons --group-directories-first --git --bytes'
+alias tree='exa -T --icons'
 alias ..='cd ..'                                      # Go up one directory
 alias ...='cd ../..'                                  # Go up two directories
 alias cls='clear'                                     # Clear the screen
@@ -103,6 +104,7 @@ alias python='python3'                                # Use python3 as default p
 alias clean='~/wsl-clean.sh'                          # Clean up WSL
 alias update='sudo apt update && sudo apt upgrade -y' # Update system
 alias ex='exit'                                       # Exit the shell
+alias q='exit'                                        #Exit the shell
 alias bat='batcat'                                    # Use batcat as default bat
 
 # === Enhanced Aliases (No external dependencies) ===
@@ -114,10 +116,20 @@ alias du='du -h'                               # Human readable directory usage
 alias free='free -h'                           # Human readable memory usage
 alias ps='ps aux'                              # Better process listing
 alias reload='source ~/.bashrc'                # Reload bashrc
-alias bashrc='$EDITOR ~/.bashrc'               # Quick edit bashrc
+alias bashrc='cd && nvim ~/.bashrc'            # Quick edit bashrc
 alias ports='netstat -tuln'                    # Show open ports
 alias gitlog='git log --oneline --graph --all' # Pretty git log
 alias gitst='git status --short'               # Short git status
+alias gc='git clone'                           # Git clone
+alias nv='nvim'                                # Use nvim as default vim
+alias venvpy='python3 -m venv myenv'           # Create virtual Environment
+alias deact='deactivate'                       # Deactivate virtual Environment
+alias act='source myenv/bin/activate'          # Activate virtual Environment
+alias t='tmux'                                 # Tmux
+alias lg='lazygit'                             # Lazygit
+alias 1='helpx'     # 💡 Show functions
+alias 2='als'       # ✨ Show aliases
+alias 3='colors'    # 🎨 Show terminal colors
 
 # === Functions ===
 # Create a directory and cd into it
@@ -130,15 +142,6 @@ f() {
   find . -name "$1" 2>/dev/null
 }
 
-# Quick git status and diff overview
-gs() {
-  if command -v git >/dev/null 2>&1; then
-    git status
-    git diff --stat
-  else
-    echo "Git is not installed."
-  fi
-}
 
 # Extract various archive types
 extract() {
@@ -229,6 +232,24 @@ note() {
   fi
 }
 
+dnote() {
+  local note_file="$HOME/.daily_notes"
+  if [ ! -f "$note_file" ]; then
+    echo "No notes found."
+    return
+  fi
+
+  nl -ba "$note_file"
+  echo -n "Enter line number to delete: "
+  read line_num
+  if [[ "$line_num" =~ ^[0-9]+$ ]]; then
+    sed -i "${line_num}d" "$note_file"
+    echo "Note deleted."
+  else
+    echo "Invalid line number."
+  fi
+}
+
 # Simple calculator using bash arithmetic
 calc() {
   if [ -z "$1" ]; then
@@ -266,25 +287,195 @@ serve() {
   fi
 }
 
-# Git shortcuts with simple output
-gita() {
-  git add "$@" && echo -e "${e_green}Files staged${e_reset}"
+# Catppuccin Mocha color theme for fzf
+export FZF_CATPPUCCIN_COLORS="\
+--color=fg:#cdd6f4,bg:#1e1e2e,hl:#89b4fa \
+--color=fg+:#f5e0dc,bg+:#313244,hl+:#89b4fa \
+--color=info:#89dceb,prompt:#f38ba8,pointer:#f5c2e7 \
+--color=marker:#b4befe,spinner:#f2cdcd,header:#94e2d5 \
+--border=rounded"
+
+# Fancy file finder
+fz() {
+  find . -type f | fzf \
+    --height=90% \
+    --layout=reverse \
+    --prompt='🔍 Browse: ' \
+    --pointer='➤' \
+    --marker='✓' \
+    --info=inline \
+    --preview-window=right:60%:wrap:border-sharp \
+    --preview='bat --color=always --style=numbers --paging=never --line-range=:500 {}' \
+    $FZF_CATPPUCCIN_COLORS
 }
 
-gitc() {
-  if [ -z "$1" ]; then
-    echo -e "${e_yellow}Usage: gitc <commit message>${e_reset}"
-    return 1
-  fi
-  git commit -m "$*" && echo -e "${e_green}Changes committed${e_reset}"
+
+# Open in Neovim
+nf() {
+  local file
+  file=$(find . -type f | fzf \
+    --height=90% \
+    --layout=reverse \
+    --prompt='📄 Open in nvim: ' \
+    --pointer='➤' \
+    --marker='✓' \
+    --info=inline \
+    --preview-window=right:60%:wrap:border-sharp \
+    --preview='bat --color=always --style=numbers --paging=never --line-range=:500 {}' \
+    $FZF_CATPPUCCIN_COLORS)
+  [[ -n "$file" ]] && nvim "$file"
 }
 
-gitp() {
-  git push && echo -e "${e_green}Changes pushed${e_reset}"
+# cd into directory using fzf
+cdfz() {
+  local dir
+  dir=$(find . -type d | fzf \
+    --height=90% \
+    --layout=reverse \
+    --prompt='📁 Go to directory: ' \
+    --pointer='➤' \
+    --marker='✓' \
+    --info=inline \
+    --preview-window=right:60%:wrap:border-sharp \
+    --preview='ls -la --color=always {}' \
+    $FZF_CATPPUCCIN_COLORS)
+  [[ -n "$dir" ]] && cd "$dir"
 }
 
-gitpull() {
-  git pull && echo -e "${e_green}Repository updated${e_reset}"
+rmfz() {
+  local file
+  file=$(find . -type f | fzf --prompt='❌ Delete file: ' --preview='bat --style=numbers --color=always {}' $FZF_CATPPUCCIN_COLORS)
+  [[ -n "$file" ]] && rm -i "$file"
+}
+
+pipfz() {
+  local pkg
+  pkg=$(pip list | tail -n +3 | fzf --prompt="📦 Uninstall package: " --preview="pip show {1}" --with-nth=1 $FZF_CATPPUCCIN_COLORS | awk '{print $1}')
+  [[ -n "$pkg" ]] && pip uninstall "$pkg"
+}
+
+
+# Grep with FZF + BAT Preview, Catppuccin Colors, and Choice
+
+# Grep with FZF + BAT Preview, Catppuccin Colors, and More
+gfz() {
+  local query result choice
+  read -rp "🔎 Enter search pattern: " query || return
+
+  result=$(rg --files-with-matches "$query" 2>/dev/null | fzf \
+    --height=90% \
+    --layout=reverse \
+    --prompt="📂 Matching files: " \
+    --pointer="➤" \
+    --marker="✓" \
+    --info=inline \
+    --preview-window=right:60%:wrap:border-sharp \
+    --preview="bat --style=numbers --color=always --line-range=:500 --highlight-line=\$(rg --color=never --no-heading --line-number '$query' {} | head -n1 | cut -d: -f1) {}" \
+    $FZF_CATPPUCCIN_COLORS)
+
+  [[ -z "$result" ]] && return
+
+  read -n1 -rp "💡 Open in (n)vim, (v)iew, (c)at, (b)at, or (q)uit ? -> " choice
+  echo
+
+  case "$choice" in
+    n|N)
+      nvim +"$(rg -n "$query" "$result" | head -n1 | cut -d: -f1)" "$result"
+      ;;
+    v|V)
+      less "$result"
+      ;;
+    c|C)
+      cat "$result"
+      ;;
+    b|B)
+      bat "$result"
+      ;;
+    q|Q)
+      echo "❌ Cancelled."
+      ;;
+    *)
+      echo "❓ Unknown choice."
+      ;;
+  esac
+}
+
+mvf() {
+  local src dest
+  src=$(find . -type f | fzf \
+    --prompt="📄 Select file to move: " \
+    --layout=reverse \
+    --height=80% \
+    --border=rounded \
+    --preview="bat --style=numbers --color=always --line-range=:500 {} 2>/dev/null || cat {}" \
+    $FZF_CATPPUCCIN_COLORS)
+
+  [[ -z "$src" ]] && echo "❌ Cancelled." && return
+
+  dest=$(find . -type d | fzf \
+    --prompt="📁 Select destination folder: " \
+    --layout=reverse \
+    --height=80% \
+    --border=rounded \
+    --preview="ls -la {}" \
+    $FZF_CATPPUCCUIN_COLORS)
+
+  [[ -z "$dest" ]] && echo "❌ Cancelled." && return
+
+  mv "$src" "$dest" && echo "✅ Moved '$src' → '$dest/'"
+}
+
+cpf() {
+  local src dest
+  src=$(find . -type f | fzf \
+    --prompt="📄 Select file to copy: " \
+    --layout=reverse \
+    --height=80% \
+    --border=rounded \
+    --preview="bat --style=numbers --color=always --line-range=:500 {} 2>/dev/null || cat {}" \
+    $FZF_CATPPUCCIN_COLORS)
+
+  [[ -z "$src" ]] && echo "❌ Cancelled." && return
+
+  dest=$(find . -type d | fzf \
+    --prompt="📁 Select destination folder: " \
+    --layout=reverse \
+    --height=80% \
+    --border=rounded \
+    --preview="ls -la {}" \
+    $FZF_CATPPUCCIN_COLORS)
+
+  [[ -z "$dest" ]] && echo "❌ Cancelled." && return
+
+  cp "$src" "$dest" && echo "✅ Copied '$src' → '$dest/'"
+}
+
+gitupload() {
+    local repo_url="$1"
+    local commit_msg="${2:-'Upload via gitupload'}"
+
+    if [ -z "$repo_url" ]; then
+        echo "❌ Usage: gitupload <repo_url> [commit_message]"
+        return 1
+    fi
+
+    if [ ! -d .git ]; then
+        echo "📁 Initializing Git repository..."
+        git init
+        git branch -M main
+        git remote add origin "$repo_url"
+    fi
+
+    echo "📤 Adding files..."
+    git add .
+
+    echo "📝 Committing changes..."
+    git commit -m "$commit_msg"
+
+    echo "🚀 Pushing to GitHub..."
+    git push -u origin main
+
+    echo "✅ Upload complete!"
 }
 
 # Show available custom functions
@@ -355,7 +546,8 @@ colors() {
 
 
 # === Environment Variables ===
-export EDITOR='vim'                  # Set default editor to vim
+export EDITOR='nvim'
+export VISUAL='nvim'                 # Set default editor to vim
 export PATH="$HOME/.local/bin:$PATH" # Add ~/.local/bin to PATH
 export LESS='-R'                     # Enable raw control chars for less (color support)
 
@@ -372,26 +564,20 @@ fi
 # === Welcome Message ===
 cat <<'EOF'
 
-   /\_/\          |\__/,|   (`\    ◤————————————◥
-  ( o.o )       _.|o o  |_   ) )    Welcome YASH
-   > ^ <      -(((---(((--------   ◣————————————◢
-
-
 ██╗   ██╗ █████╗ ███████╗██╗  ██╗     ██╗ ██╗     ██╗   ██╗██████╗ ██╗   ██╗███╗   ██╗████████╗██╗   ██╗      
 ╚██╗ ██╔╝██╔══██╗██╔════╝██║  ██║    ████████╗    ██║   ██║██╔══██╗██║   ██║████╗  ██║╚══██╔══╝██║   ██║      
  ╚████╔╝ ███████║███████╗███████║    ╚██╔═██╔╝    ██║   ██║██████╔╝██║   ██║██╔██╗ ██║   ██║   ██║   ██║      
   ╚██╔╝  ██╔══██║╚════██║██╔══██║    ████████╗    ██║   ██║██╔══██╗██║   ██║██║╚██╗██║   ██║   ██║   ██║      
    ██║   ██║  ██║███████║██║  ██║    ╚██╔═██╔╝    ╚██████╔╝██████╔╝╚██████╔╝██║ ╚████║   ██║   ╚██████╔╝██╗██╗
    ╚═╝   ╚═╝  ╚═╝╚══════╝╚═╝  ╚═╝     ╚═╝ ╚═╝      ╚═════╝ ╚═════╝  ╚═════╝ ╚═╝  ╚═══╝   ╚═╝    ╚═════╝ ╚═╝╚═╝
-
 EOF
-
-echo -e "${e_rosewater}Hello, ${e_mauve}YASH${e_rosewater}! Your terminal is live — ready to compile some code?✨💻${e_reset}"
-echo -e "${e_teal}User: ${e_text}$USER ${e_teal}| Host: ${e_text}$(hostname) ${e_teal}| Shell: ${e_text}$SHELL${e_reset}"
-echo -e "${e_overlay1}💡Type 'helpx' to see available functions${e_reset}"
-echo -e "${e_overlay1}✨Type 'als' to see available aliases${e_reset}"
-echo -e "${e_overlay1}🎨Type \"colors\" to show colors of terminal${e_reset}"
-
+echo -e "|${e_rosewater}|> Hello, ${e_mauve}YASH${e_rosewater}! Your terminal is live — ready to compile some code?✨💻${e_reset}"
+echo -e "|${e_red}|> ${e_peach}User :  ${e_text}$USER"
+echo -e "|${e_red}|> ${e_blue}Host :  ${e_text}$(hostname)"
+echo -e "|${e_red}|> ${e_green}Shell: ${e_text}$SHELL"
+echo -e "[1]${e_overlay1}💡Type 'helpx' to see available functions${e_reset}"
+echo -e "[2]${e_overlay1}✨Type 'als' to see available aliases${e_reset}"
+echo -e "[3]${e_overlay1}🎨Type 'colors' to show colors of terminal${e_reset}"
 # === Final Touches ===
 unset color_prompt force_color_prompt # Clean up unused variables
 
@@ -421,59 +607,6 @@ c() {
     echo "Usage: c <filename.c>"
   fi
 }
+
 alias wrap="/mnt/c/Users/yash shinde/AppData/Local/wrap/bin/wrap.exe"
-alias wrap="/mnt/c/Users/yash shinde/AppData/Local/wrap/bin/wrap.exe"
 
-# Browse files using fzf with preview
-fz() {
-  find . -type f | fzf \
-    --height=90% \
-    --layout=reverse \
-    --border=rounded \
-    --prompt='🔍 Browse: ' \
-    --pointer='➤' \
-    --marker='✓' \
-    --info=inline \
-    --color=dark,border:bright-magenta \
-    --preview-window=right:60%:wrap:border-sharp \
-    --preview='bat --color=always --style=numbers --paging=never --line-range=:500 {}' \
-    --bind='ctrl-p:toggle-preview'
-}
-
-# Open selected file in nvim using fzf
-nf() {
-  local file
-  file=$(find . -type f | fzf \
-    --height=90% \
-    --layout=reverse \
-    --border=rounded \
-    --prompt='📄 Open in nvim: ' \
-    --pointer='➤' \
-    --marker='✓' \
-    --info=inline \
-    --color=dark,border:bright-cyan \
-    --preview-window=right:60%:wrap:border-sharp \
-    --preview='bat --color=always --style=numbers --paging=never --line-range=:500 {}' \
-    --bind='ctrl-p:toggle-preview')
-
-  [[ -n "$file" ]] && nvim "$file"
-}
-
-# cd into a directory selected with fzf
-cdfz() {
-  local dir
-  dir=$(find . -type d | fzf \
-    --height=90% \
-    --layout=reverse \
-    --border=rounded \
-    --prompt='📁 Select directory: ' \
-    --pointer='➤' \
-    --marker='✓' \
-    --info=inline \
-    --color=dark,border:bright-green \
-    --preview-window=right:60%:wrap:border-sharp \
-    --preview='ls -la {}' \
-    --bind='ctrl-p:toggle-preview')
-
-  [[ -n "$dir" ]] && cd "$dir"
-}
