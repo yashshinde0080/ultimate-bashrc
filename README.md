@@ -107,15 +107,9 @@ This configuration uses the **Catppuccin** color scheme with full 32-bit RGB sup
 
 ### 1. 📦 Installation
 ```bash
-# Method 1: Direct download
-curl -fsSL https://raw.githubusercontent.com/yourusername/bash-config/main/.bashrc -o ~/.bashrc
-
-# Method 2: Git clone
-git clone https://github.com/yourusername/bash-config.git
+# Method 1: Git clone
+git clone [https://github.com/yourusername/bash-config.git](https://github.com/yashshinde0080/ultimate-bashrc.git)
 cp bash-config/.bashrc ~/.bashrc
-
-# Method 3: Manual copy
-# Copy the content from paste.txt to ~/.bashrc
 ```
 
 ### 2. 🔄 Apply Configuration
