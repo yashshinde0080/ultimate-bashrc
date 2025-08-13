@@ -98,7 +98,7 @@ alias tree='exa -T --icons'
 alias ..='cd ..'                                      # Go up one directory
 alias ...='cd ../..'                                  # Go up two directories
 alias cls='clear'                                     # Clear the screen
-alias h='history'                                     # Show command history
+alias h='history | tail -n 10'                        # Show command history
 alias j='jobs -l'                                     # List active jobs with details
 alias python='python3'                                # Use python3 as default python
 alias clean='~/wsl-clean.sh'                          # Clean up WSL
@@ -127,9 +127,10 @@ alias deact='deactivate'                       # Deactivate virtual Environment
 alias act='source myenv/bin/activate'          # Activate virtual Environment
 alias t='tmux'                                 # Tmux
 alias lg='lazygit'                             # Lazygit
-alias 1='helpx'     # 💡 Show functions
-alias 2='als'       # ✨ Show aliases
-alias 3='colors'    # 🎨 Show terminal colors
+alias 1='helpx'                                # 💡 Show functions
+alias 2='als'                                  # ✨ Show aliases
+alias 3='colors'                               # 🎨 Show terminal colors
+alias 4='sysinfo'                              # 🌐 Show system information
 
 # === Functions ===
 # Create a directory and cd into it
@@ -186,18 +187,17 @@ search() {
 
 # Show system information using standard commands
 sysinfo() {
-  echo -e "${e_sapphire}╔═══════════════════════════════════════════════════╗${e_reset}"
-  echo -e "${e_sapphire}║${e_text}                  System Information               ${e_sapphire}║${e_reset}"
-  echo -e "${e_sapphire}╠═══════════════════════════════════════════════════╣${e_reset}"
-  echo -e "${e_sapphire}║${e_teal} OS:       ${e_text}$(uname -s) $(uname -r | cut -d' ' -f1)${e_sapphire}║${e_reset}"
-  echo -e "${e_sapphire}║${e_teal} Hostname: ${e_text}$(hostname)${e_sapphire}                         ║${e_reset}"
-  echo -e "${e_sapphire}║${e_teal} User:     ${e_text}$(whoami)${e_sapphire}                                    ║${e_reset}"
+  echo -e "${e_sapphire}╭────System INFO────────────────────────────────────╮${e_reset}"
+  echo -e "${e_sapphire}│${e_teal} OS:       ${e_text}$(uname -s) $(uname -r | cut -d' ' -f1)${e_sapphire}│${e_reset}"
+  echo -e "${e_sapphire}│${e_teal} Hostname: ${e_text}$(hostname)${e_sapphire}                         │${e_reset}"
+  echo -e "${e_sapphire}│${e_teal} User:     ${e_text}$(whoami)${e_sapphire}                                    │${e_reset}"
   if command -v uptime >/dev/null 2>&1; then
-    echo -e "${e_sapphire}║${e_teal} Uptime:   ${e_text}$(uptime | awk -F'up ' '{print $2}' | awk -F',' '{print $1}')${e_sapphire}                                   ║${e_reset}"
+    echo -e "${e_sapphire}│${e_teal} Uptime:   ${e_text}$(uptime -p | sed 's/up //')${e_sapphire}                      │${e_reset}"
   fi
-  echo -e "${e_sapphire}║${e_teal} Date:     ${e_text}$(date)${e_sapphire}            ║${e_reset}"
-  echo -e "${e_sapphire}╚═══════════════════════════════════════════════════╝${e_reset}"
+  echo -e "${e_sapphire}│${e_teal} Date:     ${e_text}$(date '+%a %d %b %Y %H:%M:%S')${e_sapphire}                │${e_reset}"
+  echo -e "${e_sapphire}╰───────────────────────────────────────────────────╯${e_reset}"
 }
+
 
 # Create simple project directory structure
 newproject() {
@@ -206,7 +206,8 @@ newproject() {
     return 1
   fi
 
-  mkdir -p "$1"/{src,docs,tests}
+  mkdir -p "$1"/{templates,static,data}
+  touch "$1"/{requirement.txt,readme.md}
   cd "$1"
   touch README.md .gitignore
   echo "# $1" >README.md
@@ -480,69 +481,65 @@ gitupload() {
 
 # Show available custom functions
 helpx() {
-  echo -e "${e_sapphire}╔═══════════════════════════════════════════════╗${e_reset}"
-  echo -e "${e_sapphire}║${e_text}                     helpx                     ${e_sapphire}║${e_reset}"
-  echo -e "${e_sapphire}╠═══════════════════════════════════════════════╣${e_reset}"
-  echo -e "${e_sapphire}║${e_green} backup <file>    ${e_text}- Create timestamped backup  ${e_sapphire}║${e_reset}"
-  echo -e "${e_sapphire}║${e_green} search <pattern> ${e_text}- Search files by name       ${e_sapphire}║${e_reset}"
-  echo -e "${e_sapphire}║${e_green} sysinfo          ${e_text}- Show system information    ${e_sapphire}║${e_reset}"
-  echo -e "${e_sapphire}║${e_green} newproject <n>   ${e_text}- Create project structure   ${e_sapphire}║${e_reset}"
-  echo -e "${e_sapphire}║${e_green} note <text>      ${e_text}- Add/view notes             ${e_sapphire}║${e_reset}"
-  echo -e "${e_sapphire}║${e_green} calc <expr>      ${e_text}- Simple calculator          ${e_sapphire}║${e_reset}"
-  echo -e "${e_sapphire}║${e_green} duh              ${e_text}- Show directory sizes       ${e_sapphire}║${e_reset}"
-  echo -e "${e_sapphire}║${e_green} serve [port]     ${e_text}- Start HTTP server (python) ${e_sapphire}║${e_reset}"
-  echo -e "${e_sapphire}║${e_green} gita/gitc/gitp   ${e_text}- Quick git operations       ${e_sapphire}║${e_reset}"
-  echo -e "${e_sapphire}╚═══════════════════════════════════════════════╝${e_reset}"
+  echo -e "${e_sapphire}╭────HELP MENU───────────────────────────────────╮${e_reset}" 
+  echo -e "${e_sapphire}│${e_green} backup <file>    ${e_text}- Create timestamped backup   ${e_sapphire}│${e_reset}"
+  echo -e "${e_sapphire}│${e_green} search <pattern> ${e_text}- Search files by name        ${e_sapphire}│${e_reset}"
+  echo -e "${e_sapphire}│${e_green} sysinfo          ${e_text}- Show system information     ${e_sapphire}│${e_reset}"
+  echo -e "${e_sapphire}│${e_green} newproject <n>   ${e_text}- Create project structure    ${e_sapphire}│${e_reset}"
+  echo -e "${e_sapphire}│${e_green} note <text>      ${e_text}- Add/view notes              ${e_sapphire}│${e_reset}"
+  echo -e "${e_sapphire}│${e_green} calc <expr>      ${e_text}- Simple calculator           ${e_sapphire}│${e_reset}"
+  echo -e "${e_sapphire}│${e_green} duh              ${e_text}- Show directory sizes        ${e_sapphire}│${e_reset}"
+  echo -e "${e_sapphire}│${e_green} serve [port]     ${e_text}- Start HTTP server (python)  ${e_sapphire}│${e_reset}"
+  echo -e "${e_sapphire}│${e_green} gita/gitc/gitp   ${e_text}- Quick git operations        ${e_sapphire}│${e_reset}"
+  echo -e "${e_sapphire}╰────────────────────────────────────────────────╯${e_reset}"
 }
+
 
 # Show available aliases in a formatted table (2 columns)
 als() {
-  echo -e "${e_sapphire}╔═══════════════════════════════════════════════════════════════════════════════════════════════════╗${e_reset}"
-  echo -e "${e_sapphire}║${e_text}                                              Aliases                                              ${e_sapphire}║${e_reset}"
-  echo -e "${e_sapphire}╠═══════════════════════════════════════════════════════════════════════════════════════════════════╣${e_reset}"
-  echo -e "${e_sapphire}║${e_green} ll        ${e_text}- ls -alF (list all files)        ${e_sapphire}        │${e_green} la        ${e_text}- ls -A (list almost all)       ${e_sapphire}  ║${e_reset}"
-  echo -e "${e_sapphire}║${e_green} l         ${e_text}- ls -CF (list in columns)        ${e_sapphire}        │${e_green} lh        ${e_text}- ls -lah (human readable)      ${e_sapphire}  ║${e_reset}"
-  echo -e "${e_sapphire}║${e_green} ..        ${e_text}- cd .. (go up one dir)           ${e_sapphire}        │${e_green} ...       ${e_text}- cd ../.. (go up two dirs)     ${e_sapphire}  ║${e_reset}"
-  echo -e "${e_sapphire}║${e_green} cls       ${e_text}- clear (clear screen)            ${e_sapphire}        │${e_green} h         ${e_text}- history (command history)     ${e_sapphire}  ║${e_reset}"
-  echo -e "${e_sapphire}║${e_green} j         ${e_text}- jobs -l (list active jobs)      ${e_sapphire}        │${e_green} python    ${e_text}- python3 (default python)      ${e_sapphire}  ║${e_reset}"
-  echo -e "${e_sapphire}║${e_green} clean     ${e_text}- ~/wsl-clean.sh (clean WSL)      ${e_sapphire}        │${e_green} update    ${e_text}- apt update && upgrade         ${e_sapphire}  ║${e_reset}"
-  echo -e "${e_sapphire}║${e_green} ex        ${e_text}- exit (exit shell)               ${e_sapphire}        │${e_green} bat       ${e_text}- batcat (default bat)          ${e_sapphire}  ║${e_reset}"
-  echo -e "${e_sapphire}║${e_green} fgrep     ${e_text}- fgrep --color=auto              ${e_sapphire}        │${e_green} egrep     ${e_text}- egrep --color=auto            ${e_sapphire}  ║${e_reset}"
-  echo -e "${e_sapphire}║${e_green} df        ${e_text}- df -h (human readable)          ${e_sapphire}        │${e_green} du        ${e_text}- du -h (human readable)        ${e_sapphire}  ║${e_reset}"
-  echo -e "${e_sapphire}║${e_green} free      ${e_text}- free -h (human readable)        ${e_sapphire}        │${e_green} ps        ${e_text}- ps aux (better listing)       ${e_sapphire}  ║${e_reset}"
-  echo -e "${e_sapphire}║${e_green} reload    ${e_text}- source ~/.bashrc                ${e_sapphire}        │${e_green} bashrc    ${e_text}- edit ~/.bashrc                ${e_sapphire}  ║${e_reset}"
-  echo -e "${e_sapphire}║${e_green} ports     ${e_text}- netstat -tuln (open ports)      ${e_sapphire}        │${e_green} gitlog    ${e_text}- git log --oneline --graph     ${e_sapphire}  ║${e_reset}"
-  echo -e "${e_sapphire}║${e_green} gitst     ${e_text}- git status --short              ${e_sapphire}        │${e_text}                                             ${e_sapphire}║${e_reset}"
-  echo -e "${e_sapphire}╚═══════════════════════════════════════════════════════════════════════════════════════════════════╝${e_reset}"
+  echo -e "${e_sapphire}╭────Aliases─────────────────────────────────────────────────────────────────────────────╮${e_reset}"
+  echo -e "${e_sapphire}│${e_green} ll       ${e_text}- ls -alF (list all files)       ${e_sapphire} │ ${e_green} la       ${e_text}- ls -A (list almost all)       ${e_sapphire}│${e_reset}"
+  echo -e "${e_sapphire}│${e_green} l        ${e_text}- ls -CF (list in columns)       ${e_sapphire} │ ${e_green} lh       ${e_text}- ls -lah (human readable)      ${e_sapphire}│${e_reset}"
+  echo -e "${e_sapphire}│${e_green} ..       ${e_text}- cd .. (go up one dir)          ${e_sapphire} │ ${e_green} ...      ${e_text}- cd ../.. (go up two dirs)     ${e_sapphire}│${e_reset}"
+  echo -e "${e_sapphire}│${e_green} cls      ${e_text}- clear (clear screen)           ${e_sapphire} │ ${e_green} h        ${e_text}- history (command history)     ${e_sapphire}│${e_reset}"
+  echo -e "${e_sapphire}│${e_green} j        ${e_text}- jobs -l (list active jobs)     ${e_sapphire} │ ${e_green} python   ${e_text}- python3 (default python)      ${e_sapphire}│${e_reset}"
+  echo -e "${e_sapphire}│${e_green} clean    ${e_text}- ~/wsl-clean.sh (clean WSL)     ${e_sapphire} │ ${e_green} update   ${e_text}- apt update && upgrade         ${e_sapphire}│${e_reset}"
+  echo -e "${e_sapphire}│${e_green} ex       ${e_text}- exit (exit shell)              ${e_sapphire} │ ${e_green} bat      ${e_text}- batcat (default bat)          ${e_sapphire}│${e_reset}"
+  echo -e "${e_sapphire}│${e_green} fgrep    ${e_text}- fgrep --color=auto             ${e_sapphire} │ ${e_green} egrep    ${e_text}- egrep --color=auto            ${e_sapphire}│${e_reset}"
+  echo -e "${e_sapphire}│${e_green} df       ${e_text}- df -h (human readable)         ${e_sapphire} │ ${e_green} du       ${e_text}- du -h (human readable)        ${e_sapphire}│${e_reset}"
+  echo -e "${e_sapphire}│${e_green} free     ${e_text}- free -h (human readable)       ${e_sapphire} │ ${e_green} ps       ${e_text}- ps aux (better listing)       ${e_sapphire}│${e_reset}"
+  echo -e "${e_sapphire}│${e_green} reload   ${e_text}- source ~/.bashrc               ${e_sapphire} │ ${e_green} bashrc   ${e_text}- edit ~/.bashrc                ${e_sapphire}│${e_reset}"
+  echo -e "${e_sapphire}│${e_green} ports    ${e_text}- netstat -tuln (open ports)     ${e_sapphire} │ ${e_green} gitlog   ${e_text}- git log --oneline --graph     ${e_sapphire}│${e_reset}"
+  echo -e "${e_sapphire}│${e_green} gitst    ${e_text}- git status --short             ${e_sapphire} │ ${e_text}                                          ${e_sapphire}│${e_reset}"
+  echo -e "${e_sapphire}╰────────────────────────────────────────────────────────────────────────────────────────╯${e_reset}"
 }
+
 
 # Show available colors in a formatted table
 colors() {
-  echo -e "${e_sapphire}╔═══════════════════════════════════════════════════════════════════╗${e_reset}"
-  echo -e "${e_sapphire}║${e_text}                       Color Palette                               ${e_sapphire}║${e_reset}"
-  echo -e "${e_sapphire}╠═══════════════════════════════════════════════════════════════════╣${e_reset}"
-  echo -e "${e_sapphire}║${e_rosewater} rosewater ${e_text}- \e[38;2;245;224;220m█████${e_text} (245,224,220) ${e_sapphire}│${e_flamingo} flamingo  ${e_text}- \e[38;2;242;205;205m█████${e_text} (242,205,205) ${e_sapphire}║${e_reset}"
-  echo -e "${e_sapphire}║${e_pink} pink      ${e_text}- \e[38;2;245;194;231m█████${e_text} (245,194,231) ${e_sapphire}│${e_mauve} mauve     ${e_text}- \e[38;2;203;166;247m█████${e_text} (203,166,247) ${e_sapphire}║${e_reset}"
-  echo -e "${e_sapphire}║${e_red} red       ${e_text}- \e[38;2;243;139;168m█████${e_text} (243,139,168) ${e_sapphire}│${e_maroon} maroon    ${e_text}- \e[38;2;235;160;172m█████${e_text} (235,160,172) ${e_sapphire}║${e_reset}"
-  echo -e "${e_sapphire}║${e_peach} peach     ${e_text}- \e[38;2;250;179;135m█████${e_text} (250,179,135) ${e_sapphire}│${e_yellow} yellow    ${e_text}- \e[38;2;249;226;175m█████${e_text} (249,226,175) ${e_sapphire}║${e_reset}"
-  echo -e "${e_sapphire}║${e_green} green     ${e_text}- \e[38;2;166;227;161m█████${e_text} (166,227,161) ${e_sapphire}│${e_teal} teal      ${e_text}- \e[38;2;148;226;213m█████${e_text} (148,226,213) ${e_sapphire}║${e_reset}"
-  echo -e "${e_sapphire}║${e_sky} sky       ${e_text}- \e[38;2;137;220;235m█████${e_text} (137,220,235) ${e_sapphire}│${e_sapphire} sapphire  ${e_text}- \e[38;2;116;199;236m█████${e_text} (116,199,236) ${e_sapphire}║${e_reset}"
-  echo -e "${e_sapphire}║${e_blue} blue      ${e_text}- \e[38;2;137;180;250m█████${e_text} (137,180,250) ${e_sapphire}│${e_lavender} lavender  ${e_text}- \e[38;2;180;190;254m█████${e_text} (180,190,254) ${e_sapphire}║${e_reset}"
-  echo -e "${e_sapphire}╠═══════════════════════════════════════════════════════════════════╣${e_reset}"
-  echo -e "${e_sapphire}║${e_text}                        Text Colors                                ${e_sapphire}║${e_reset}"
-  echo -e "${e_sapphire}╠═══════════════════════════════════════════════════════════════════╣${e_reset}"
-  echo -e "${e_sapphire}║${e_text} text      ${e_text}- \e[38;2;205;214;244m█████${e_text} (205,214,244) ${e_sapphire}│${e_subtext1} subtext1  ${e_text}- \e[38;2;186;194;222m█████${e_text} (186,194,222) ${e_sapphire}║${e_reset}"
-  echo -e "${e_sapphire}║${e_subtext0} subtext0  ${e_text}- \e[38;2;166;173;200m█████${e_text} (166,173,200) ${e_sapphire}│${e_overlay2} overlay2  ${e_text}- \e[38;2;147;153;178m█████${e_text} (147,153,178) ${e_sapphire}║${e_reset}"
-  echo -e "${e_sapphire}║${e_overlay1} overlay1  ${e_text}- \e[38;2;127;132;156m█████${e_text} (127,132,156) ${e_sapphire}│${e_overlay0} overlay0  ${e_text}- \e[38;2;108;112;134m█████${e_text} (108,112,134) ${e_sapphire}║${e_reset}"
-  echo -e "${e_sapphire}╠═══════════════════════════════════════════════════════════════════╣${e_reset}"
-  echo -e "${e_sapphire}║${e_text}                       Surface Colors                              ${e_sapphire}║${e_reset}"
-  echo -e "${e_sapphire}╠═══════════════════════════════════════════════════════════════════╣${e_reset}"
-  echo -e "${e_sapphire}║${e_surface2} surface2  ${e_text}- \e[38;2;88;91;112m█████${e_text} (88,91,112)   ${e_sapphire}│${e_surface1} surface1  ${e_text}- \e[38;2;69;71;90m█████${e_text} (69,71,90)    ${e_sapphire}║${e_reset}"
-  echo -e "${e_sapphire}║${e_surface0} surface0  ${e_text}- \e[38;2;49;50;68m█████${e_text} (49,50,68)    ${e_sapphire}│${e_base} base      ${e_text}- \e[38;2;30;30;46m█████${e_text} (30,30,46)    ${e_sapphire}║${e_reset}"
-  echo -e "${e_sapphire}║${e_mantle} mantle    ${e_text}- \e[38;2;24;24;37m█████${e_text} (24,24,37)    ${e_sapphire}│${e_crust} crust     ${e_text}- \e[38;2;17;17;27m█████${e_text} (17,17,27)    ${e_sapphire}║${e_reset}"
-  echo -e "${e_sapphire}╚═══════════════════════════════════════════════════════════════════╝${e_reset}"
-  echo -e "${e_overlay1}💡 Use these color variables in your scripts: \${e_colorname}text\${e_reset}${e_reset}"
+  echo -e "${e_sapphire}╭────Color Palette────────────────────────────────────────────────────╮${e_reset}"
+  echo -e "${e_sapphire}├─────────────────────────────────────────────────────────────────────┤${e_reset}"
+  echo -e "${e_sapphire}│${e_rosewater} rosewater ${e_text}- \e[38;2;245;224;220m█████${e_text} (245,224,220) ${e_sapphire} │ ${e_flamingo} flamingo  ${e_text}- \e[38;2;242;205;205m█████${e_text} (242,205,205) ${e_sapphire}│${e_reset}"
+  echo -e "${e_sapphire}│${e_pink} pink      ${e_text}- \e[38;2;245;194;231m█████${e_text} (245,194,231) ${e_sapphire} │ ${e_mauve} mauve     ${e_text}- \e[38;2;203;166;247m█████${e_text} (203,166,247) ${e_sapphire}│${e_reset}"
+  echo -e "${e_sapphire}│${e_red} red       ${e_text}- \e[38;2;243;139;168m█████${e_text} (243,139,168) ${e_sapphire} │ ${e_maroon} maroon    ${e_text}- \e[38;2;235;160;172m█████${e_text} (235,160,172) ${e_sapphire}│${e_reset}"
+  echo -e "${e_sapphire}│${e_peach} peach     ${e_text}- \e[38;2;250;179;135m█████${e_text} (250,179,135) ${e_sapphire} │ ${e_yellow} yellow    ${e_text}- \e[38;2;249;226;175m█████${e_text} (249,226,175) ${e_sapphire}│${e_reset}"
+  echo -e "${e_sapphire}│${e_green} green     ${e_text}- \e[38;2;166;227;161m█████${e_text} (166,227,161) ${e_sapphire} │ ${e_teal} teal      ${e_text}- \e[38;2;148;226;213m█████${e_text} (148,226,213) ${e_sapphire}│${e_reset}"
+  echo -e "${e_sapphire}│${e_sky} sky       ${e_text}- \e[38;2;137;220;235m█████${e_text} (137,220,235) ${e_sapphire} │ ${e_sapphire} sapphire  ${e_text}- \e[38;2;116;199;236m█████${e_text} (116,199,236) ${e_sapphire}│${e_reset}"
+  echo -e "${e_sapphire}│${e_blue} blue      ${e_text}- \e[38;2;137;180;250m█████${e_text} (137,180,250) ${e_sapphire} │ ${e_lavender} lavender  ${e_text}- \e[38;2;180;190;254m█████${e_text} (180,190,254) ${e_sapphire}│${e_reset}"
+  echo -e "${e_sapphire}├────Text Colors──────────────────────────────────────────────────────┤${e_reset}"
+  echo -e "${e_sapphire}├─────────────────────────────────────────────────────────────────────┤${e_reset}"
+  echo -e "${e_sapphire}│${e_text} text      ${e_text}- \e[38;2;205;214;244m█████${e_text} (205,214,244) ${e_sapphire} │ ${e_subtext1} subtext1  ${e_text}- \e[38;2;186;194;222m█████${e_text} (186,194,222) ${e_sapphire}│${e_reset}"
+  echo -e "${e_sapphire}│${e_subtext0} subtext0  ${e_text}- \e[38;2;166;173;200m█████${e_text} (166,173,200) ${e_sapphire} │ ${e_overlay2} overlay2  ${e_text}- \e[38;2;147;153;178m█████${e_text} (147,153,178) ${e_sapphire}│${e_reset}"
+  echo -e "${e_sapphire}│${e_overlay1} overlay1  ${e_text}- \e[38;2;127;132;156m█████${e_text} (127,132,156) ${e_sapphire} │ ${e_overlay0} overlay0  ${e_text}- \e[38;2;108;112;134m█████${e_text} (108,112,134) ${e_sapphire}│${e_reset}"
+  echo -e "${e_sapphire}├────Surface Colors───────────────────────────────────────────────────┤${e_reset}"
+  echo -e "${e_sapphire}├─────────────────────────────────────────────────────────────────────┤${e_reset}"
+  echo -e "${e_sapphire}│${e_surface2} surface2  ${e_text}- \e[38;2;88;91;112m█████${e_text} (88,91,112)   ${e_sapphire} │ ${e_surface1} surface1  ${e_text}- \e[38;2;69;71;90m█████${e_text} (69,71,90)    ${e_sapphire}│${e_reset}"
+  echo -e "${e_sapphire}│${e_surface0} surface0  ${e_text}- \e[38;2;49;50;68m█████${e_text} (49,50,68)    ${e_sapphire} │ ${e_base} base      ${e_text}- \e[38;2;30;30;46m█████${e_text} (30,30,46)    ${e_sapphire}│${e_reset}"
+  echo -e "${e_sapphire}│${e_mantle} mantle    ${e_text}- \e[38;2;24;24;37m█████${e_text} (24,24,37)    ${e_sapphire} │ ${e_crust} crust     ${e_text}- \e[38;2;17;17;27m█████${e_text} (17,17,27)    ${e_sapphire}│${e_reset}"
+  echo -e "${e_sapphire}╰─────────────────────────────────────────────────────────────────────╯${e_reset}"
+  echo -e "${e_overlay1}💡 Use these color variables in your scripts: \${e_colorname}text\${e_reset}"
 }
+
 
 
 # === Environment Variables ===
@@ -572,20 +569,21 @@ cat <<'EOF'
    ╚═╝   ╚═╝  ╚═╝╚══════╝╚═╝  ╚═╝     ╚═╝ ╚═╝      ╚═════╝ ╚═════╝  ╚═════╝ ╚═╝  ╚═══╝   ╚═╝    ╚═════╝ ╚═╝╚═╝
 EOF
 # ── Gemini Style MOTD Box ─────────────────────────────────────
-echo -e "${e_rosewater}╭────────────────────────────────────────────────────────────────────────────╮${e_reset}"
+echo -e "${e_rosewater}╭────MESSAGE─────────────────────────────────────────────────────────────────╮${e_reset}"
 echo -e "${e_rosewater}│${e_reset} 💻 ${e_rosewater}Hello, ${e_mauve}YASH${e_rosewater}! Your terminal is live — ready to compile some code?${e_reset} ✨💻   ${e_rosewater}│${e_reset}"
 echo -e "${e_rosewater}╰────────────────────────────────────────────────────────────────────────────╯${e_reset}"
 
-echo -e "${e_peach}╭────────────────────────────────────────────────────────────────────────────╮${e_reset}"
-echo -e "${e_peach}│${e_reset} 👨🏻‍💻 ${e_peach}User  ${e_reset}: ${e_text}$USER${e_reset}                                                            ${e_rosewater}│${e_reset}"
-echo -e "${e_peach}│${e_reset} 🖥️ ${e_blue}Host  ${e_reset}: ${e_text}$(hostname)${e_reset}                                                 ${e_rosewater}│${e_reset}"
-echo -e "${e_peach}│${e_reset} 💲 ${e_green}Shell ${e_reset}: ${e_text}$SHELL${e_reset}                                                       ${e_rosewater}│${e_reset}"
+echo -e "${e_peach}╭────USER INFO───────────────────────────────────────────────────────────────╮${e_reset}"
+echo -e "${e_peach}│${e_reset} 👨🏻‍💻 ${e_peach}User  ${e_reset}: ${e_text}$USER${e_reset}                                                            ${e_peach}│${e_reset}"
+echo -e "${e_peach}│${e_reset} 🖥️ ${e_blue}Host  ${e_reset}: ${e_text}$(hostname)${e_reset}                                                 ${e_peach}│${e_reset}"
+echo -e "${e_peach}│${e_reset} 💲 ${e_green}Shell ${e_reset}: ${e_text}$SHELL${e_reset}                                                       ${e_peach}│${e_reset}"
 echo -e "${e_peach}╰────────────────────────────────────────────────────────────────────────────╯${e_reset}"
-echo -e "${e_overlay1}╭────────────────────────────────────────────────────────────────────────────╮${e_reset}"
-echo -e "${e_overlay1}│${e_reset} [1] ${e_overlay1}💡 Type 'helpx'  – See available functions                             ${e_rosewater}│${e_reset}"
-echo -e "${e_overlay1}│${e_reset} [2] ${e_overlay1}✨ Type 'als'    – See available aliases                               ${e_rosewater}│${e_reset}"
-echo -e "${e_overlay1}│${e_reset} [3] ${e_overlay1}🎨 Type 'colors' – Show terminal colors                                ${e_rosewater}│${e_reset}"
-echo -e "${e_overlay1}╰────────────────────────────────────────────────────────────────────────────╯${e_reset}"
+echo -e "${e_overlay1}╭────COMMANDS─────────────────────────────────────────────────────────────────╮${e_reset}"
+echo -e "${e_overlay1}│${e_reset} [1] ${e_overlay1}💡 Type 'helpx'   – See available functions                             ${e_overlay1}│${e_reset}"
+echo -e "${e_overlay1}│${e_reset} [2] ${e_overlay1}✨ Type 'als'     – See available aliases                               ${e_overlay1}│${e_reset}"
+echo -e "${e_overlay1}│${e_reset} [3] ${e_overlay1}🎨 Type 'colors'  – Show terminal colors                                ${e_overlay1}│${e_reset}"
+echo -e "${e_overlay1}│${e_reset} [4] ${e_overlay1}🌐 Type 'sysinfo' – Show System information                             ${e_overlay1}│${e_reset}"
+echo -e "${e_overlay1}╰─────────────────────────────────────────────────────────────────────────────╯${e_reset}"
 
 
 # === Final Touches ===
